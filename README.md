@@ -13,11 +13,10 @@ Setting up the codebase:
 	b.	git clone our repository (Includes the modified colossal AI)\
 	c.	cd our repo\
 	d.	pip install -r requirements.txt\
-	e.	git clone https://github.com/hpcaitech/ColossalAI.git \
-	f.	pip install packaging\
-	g.	pip install ninja\
-	h.	pip install psutil\
-	i.	(Optional) If you have cached the previously installed extensions, remove them\
+	e.	pip install packaging\
+	f.	pip install ninja\
+	g.	pip install psutil\
+	h.	(Optional) If you have cached the previously installed extensions, remove them\
 	i.	rm -rf /home/$USER/.cache/torch_extensions/py38_cu113\
 	j.	cd ColossalAI-0.2.0\
 	k.	CUDA_EXT=1 pip install .\
