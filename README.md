@@ -13,12 +13,7 @@ Setting up the codebase:
 	b.	git clone our repository (Includes the modified colossal AI)\
 	c.	cd our repo\
 	d.	pip install -r requirements.txt\
-	e.	pip install packaging\
-	f.	pip install ninja\
-	g.	pip install psutil\
-	h.	(Optional) If you have cached the previously installed extensions, remove them\
-	i.	rm -rf /home/$USER/.cache/torch_extensions/py38_cu113\
-	j.	cd ColossalAI-0.2.0\
-	k.	CUDA_EXT=1 pip install .\
-	l.	pip install titans==0.0.7\
-	m.	pip install transformers==4.24.0
+	e.	(Optional) If you have cached the previously installed extensions, remove them\
+	f.	rm -rf /home/$USER/.cache/torch_extensions/py38_cu113\
+	g.	cd ColossalAI-0.2.0\
+	h.	CUDA_EXT=1 pip install .
