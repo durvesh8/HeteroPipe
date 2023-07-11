@@ -2,4 +2,4 @@ packaging
 ninja
 psutil
 titans
-transformers
+transformers==4.24.0
