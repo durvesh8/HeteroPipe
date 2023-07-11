@@ -1,4 +1,4 @@
-from model import GPT3_pipeline_hybrid
+from model import GPT3_pipeline_hybrid, GPT3_pipeline_hybridgpt2small
 
 from colossalai.nn.optimizer import HybridAdam
 from colossalai.zero.shard_utils import TensorShardStrategy
