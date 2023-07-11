@@ -21,7 +21,7 @@ optimizer = dict(
 )
 
 # model = dict(type=GPT3_pipeline_hybrid, checkpoint=True, num_chunks=1)
-model = dict(type=GPT3_pipeline_hybridgpt2small, checkpoint=True, num_chunks=1,num_attention_heads=12,hidden_size=HIDDEN_SIZE,max_position_embeddings=2048,num_attention_heads=12,num_layers=12)
+model = dict(type=GPT3_pipeline_hybridgpt2small, checkpoint=True, num_chunks=1,num_attention_heads=12,hidden_size=HIDDEN_SIZE,max_position_embeddings=2048,num_layers=12)
 
 # pipeline parallel: modify integer value for the number of pipeline stages
 # tensor parallel: modify size to set the tensor parallel size, usually the number of GPUs per node
