@@ -231,7 +231,7 @@ def _build_generic_gpt_pipeline_1d(module_cls, num_layers, num_chunks, device=to
         wrapper = PipelineSharedModuleWrapper([0, pipeline_size - 1])
     else:
         wrapper = None
-    logger.info("Pipeline Size(gpc.get_world_size(pp)): ",pipeline_size," Pipeline Rank(gpc.get_local_rank(pp)) ",pipeline_rank)
+    logger.info("Pipeline Size(gpc.get_world_size(pp)): "+str(pipeline_size)+" Pipeline Rank(gpc.get_local_rank(pp)) "+str(pipeline_rank))
     parts = partition_uniform(num_layers, pipeline_size, num_chunks)[pipeline_rank]
     models = []
     for start, end in parts:
