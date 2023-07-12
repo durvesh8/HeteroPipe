@@ -1,8 +1,8 @@
 Setting up the codebase:
 
 1.	Create a new conda environment with python 3.8\
-	a.	conda create -n colossal_fin python=3.8\
-	b.	conda activate colossal_fin
+	a.	conda create -n colossal_mod python=3.8\
+	b.	conda activate colossal_mod
 2.	Make sure you have CUDA 11.3 as the main CUDA. Set up a symlink if needed.\
 	a.	wget https://developer.download.nvidia.com/compute/cuda/11.3.0/local_installers/cuda_11.3.0_465.19.01_linux.run \
 	b.	sudo sh cuda_11.3.0_465.19.01_linux.run \
