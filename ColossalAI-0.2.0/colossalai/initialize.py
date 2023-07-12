@@ -216,7 +216,7 @@ def launch_from_torch(config: Union[str, Path, Config, Dict],
         raise RuntimeError(
             f"Could not find {e} in the torch environment, visit https://www.colossalai.org/ for more information on launching with torch"
         )
-
+    print("RANK: ",os.environ["RANK"],"LOCAL RANK: ",os.environ["LOCAL_RANK"],"WORLD SIZE: ",os.environ["WORLD_SIZE"])
     launch(config=config,
            local_rank=local_rank,
            rank=rank,
