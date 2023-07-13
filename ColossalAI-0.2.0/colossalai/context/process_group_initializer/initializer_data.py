@@ -44,7 +44,7 @@ class Initializer_Data(ProcessGroupInitializer):
             for ranks in rankslist:
                 group = dist.new_group(ranks)
                 # group_cpu = dist.new_group(ranks, backend='gloo') if dist.get_backend() != 'gloo' else group
-                group_cpu = pipe_group
+                group_cpu = group
                 if self.rank in ranks:
                     local_rank = ranks.index(self.rank)
                     group_world_size = len(ranks)
