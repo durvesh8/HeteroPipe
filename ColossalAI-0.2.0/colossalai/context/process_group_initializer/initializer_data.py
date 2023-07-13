@@ -40,7 +40,7 @@ class Initializer_Data(ProcessGroupInitializer):
         mode = ParallelMode.DATA
         experiment = True
         if self.data_parallel_size==2 and experiment:
-            rankslist = [[0,2],[1,3]]
+            rankslist = [[0,1],[2,3]]
             for ranks in rankslist:
                 group = dist.new_group(ranks)
                 group_cpu = dist.new_group(ranks, backend='gloo') if dist.get_backend() != 'gloo' else group
