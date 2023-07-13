@@ -515,7 +515,10 @@ class ParallelContext(metaclass=SingletonMeta):
         if device_ordinal is None:
             devices_per_node = torch.cuda.device_count()
             device_ordinal = global_rank % devices_per_node
-
+            experiment = True
+            if experiment:
+                device_ordinal = global_rank // 2
+        
         torch.cuda.set_device(device_ordinal)
         if self._verbose:
             self._logger.info(f'process rank {global_rank} is bound to device {device_ordinal}')
