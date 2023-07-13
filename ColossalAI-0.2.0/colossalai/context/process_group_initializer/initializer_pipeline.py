@@ -74,5 +74,7 @@ class Initializer_Pipeline(ProcessGroupInitializer):
                     dist_settings.append(
                         tuple((local_rank, group_world_size, process_group, cpu_group, ranks_in_group,
                                ParallelMode.PIPELINE)))
+                    print("self.rank: ",self.rank,"local_rank ",local_rank, "group_world_size: ",group_world_size, "process_group: ",process_group, "cpu_group: ",cpu_group, "ranks_in_group: ",ranks_in_group,
+                    "ParallelMode.Pipeline: ", ParallelMode.PIPELINE)
 
         return dist_settings
