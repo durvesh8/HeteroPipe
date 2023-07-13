@@ -103,7 +103,11 @@ def launch(config: Union[str, Path, Config, Dict],
     # set cuda device
     if torch.cuda.is_available():
         # if local rank is not given, calculate automatically
-        gpc.set_device(local_rank)
+        experiment=True
+        if not experiment:
+            gpc.set_device(local_rank)
+        else:
+            gpc.set_device(rank//2)
 
     # set the number of processes running on the same node
     gpc.detect_num_processes_on_current_node()

@@ -515,9 +515,6 @@ class ParallelContext(metaclass=SingletonMeta):
         if device_ordinal is None:
             devices_per_node = torch.cuda.device_count()
             device_ordinal = global_rank % devices_per_node
-        experiment = True
-        if experiment:
-            device_ordinal = global_rank // 2
         self._logger.info("DEVICE ORDINAL: "+str(device_ordinal)+" GLOBAL RANK: "+str(global_rank))
         torch.cuda.set_device(device_ordinal)
         if self._verbose:
