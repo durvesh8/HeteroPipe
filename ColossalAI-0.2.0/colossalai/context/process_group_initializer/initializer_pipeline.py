@@ -42,7 +42,8 @@ class Initializer_Pipeline(ProcessGroupInitializer):
             for pipe_ranks in pipe_rankslist:
                 pipe_group_size = len(pipe_ranks)
                 pipe_group = dist.new_group(pipe_ranks)
-                group_cpu = dist.new_group(pipe_ranks, backend='gloo') if dist.get_backend() != 'gloo' else pipe_group
+                # group_cpu = dist.new_group(pipe_ranks, backend='gloo') if dist.get_backend() != 'gloo' else pipe_group
+                group_cpu = pipe_group
                 if self.rank in pipe_ranks:
                     local_rank = pipe_ranks.index(self.rank)
                     group_world_size = pipe_group_size
