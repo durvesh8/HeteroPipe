@@ -4,7 +4,7 @@ from colossalai.nn.optimizer import HybridAdam
 from colossalai.zero.shard_utils import TensorShardStrategy
 
 BATCH_SIZE = 10
-NUM_EPOCHS = 60
+NUM_EPOCHS = 2
 SEQ_LEN = 2048
 NUM_MICRO_BATCHES = 2
 HIDDEN_SIZE = 768
