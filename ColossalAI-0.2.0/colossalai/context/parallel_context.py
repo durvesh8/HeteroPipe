@@ -430,7 +430,7 @@ class ParallelContext(metaclass=SingletonMeta):
         if parallel_config is not None:
             self._set_parallel_size_from_config(parallel_config, 'pipeline', 'pipeline_parallel_size')
             self._set_parallel_size_from_config(parallel_config, 'tensor', 'tensor_parallel_size')
-            experiment = parallel_config['pipeline']['experiment']
+            experiment = parallel_config['experiment']
 
         # the user should not set the data parallel size manually
         # instead, it should be calculated based on other parallel config
