@@ -21,11 +21,11 @@ class PipelineSharedModuleWrapper:
         rank = gpc.get_global_rank()
         num_dp_groups = world_size // dp_size
         num_pp_stages = num_dp_groups // pp_size
-        pipeline_rankslist = [[0,2],[1,3]]
+        #pipeline_rankslist = [[0,2],[1,3]]
         for i in range(dp_size):
             for j in range(num_pp_stages):
                 pipeline_ranks = list(range(i * num_dp_groups + j, (i + 1) * num_dp_groups, num_pp_stages))
-                pipeline_ranks = pipeline_rankslist[i]
+                #pipeline_ranks = pipeline_rankslist[i]
                 print("PIPELINE RANKS: ",i,j,pipeline_ranks)
                 sub_ranks = [pipeline_ranks[idx] for idx in self.pipeline_ranks]
                 group = dist.new_group(sub_ranks)
