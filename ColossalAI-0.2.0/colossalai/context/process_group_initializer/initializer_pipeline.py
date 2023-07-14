@@ -39,7 +39,7 @@ class Initializer_Pipeline(ProcessGroupInitializer):
         print(self.experiment)
         # Temp commit for VS Code
         if experiment:
-            pipe_rankslist = [[0,1,5], [2,3,4]]
+            pipe_rankslist = [[0,2],[1,3]]
 
             for pipe_ranks in pipe_rankslist:
                 pipe_group_size = len(pipe_ranks)
