@@ -5,6 +5,8 @@ from typing import Optional
 import torch
 from torch.utils.data import Dataset
 from transformers import GPT2Tokenizer
+import glob
+from tqdm import tqdm
 
 from colossalai.registry import DATASETS
 
@@ -16,22 +18,31 @@ class WebtextDataset(Dataset):
         super().__init__()
         if path is not None:
             root = os.path.dirname(path)
-            encoded_data_cache_path = os.path.join(root, f'gpt_webtext_{seq_len}.pt')
-            if os.path.isfile(encoded_data_cache_path):
-                seq_len_, data, attention_mask = torch.load(encoded_data_cache_path)
-                if seq_len_ == seq_len:
-                    self.data = data
-                    self.attention_mask = attention_mask
-                    return
+            self.files = glob.glob(os.path.join(path, '*.txt'))
+            self.files = sorted(self.files)
+            #encoded_data_cache_path = os.path.join(root, f'gpt_webtext_{seq_len}.pt')
+            #if os.path.isfile(encoded_data_cache_path):
+                #seq_len_, data, attention_mask = torch.load(encoded_data_cache_path)
+                #if seq_len_ == seq_len:
+                    #self.data = data
+                    #self.attention_mask = attention_mask
+                    #return
             raw_data = []
-            with open(path) as f:
-                for line in f.readlines():
-                    raw_data.append(json.loads(line)['text'])
-            tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-            tokenizer.pad_token = tokenizer.unk_token
-            encoded_data = tokenizer(raw_data, padding=True, truncation=True, max_length=seq_len, return_tensors='pt')
-            self.data = encoded_data['input_ids']
-            self.attention_mask = encoded_data['attention_mask']
+            print("Loading Data")
+            print("Seq Len",seq_len)
+            for i in tqdm(range(0,100)):
+                filepath = self.files[i]
+                with open(filepath) as f:
+                    for line in f.readlines():
+                        raw_data.append(line)
+                tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+                tokenizer.pad_token = tokenizer.unk_token
+                encoded_data = tokenizer(raw_data, padding='max_length', truncation=True, max_length=seq_len, return_tensors='pt')
+                self.data = encoded_data['input_ids']
+                self.attention_mask = encoded_data['attention_mask']
+            print("Finished Loading Data")
+            print(self.data.shape)
+            print(self.data)
         else:
             self.data = torch.randint(0, 50257, (10240, seq_len))
             self.attention_mask = torch.ones_like(self.data)
