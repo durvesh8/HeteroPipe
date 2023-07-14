@@ -28,5 +28,6 @@ model = dict(type=GPT3_pipeline_hybridgpt2small, checkpoint=True, num_chunks=1,n
 # for the current model implementation, mode can only be 1D or None
 parallel = dict(
     pipeline=2,
+    experiment=True,
     tensor=dict(size=1, mode='1d'),    # for the current model implementation, mode can only be 1D or None
 )

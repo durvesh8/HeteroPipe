@@ -424,12 +424,13 @@ class ParallelContext(metaclass=SingletonMeta):
         rank = self.get_global_rank()
         world_size = self.get_world_size(ParallelMode.GLOBAL)
         self.world_size = world_size
-
+        experiment = False
         # set parallel size as attributes for global context
         parallel_config = self.config.get('parallel', None)
         if parallel_config is not None:
             self._set_parallel_size_from_config(parallel_config, 'pipeline', 'pipeline_parallel_size')
             self._set_parallel_size_from_config(parallel_config, 'tensor', 'tensor_parallel_size')
+            experiment = parallel_config['pipeline']['experiment']
 
         # the user should not set the data parallel size manually
         # instead, it should be calculated based on other parallel config
@@ -475,7 +476,7 @@ class ParallelContext(metaclass=SingletonMeta):
             initializer = DIST_GROUP_INITIALIZER.get_module(initializer_type)(rank, world_size, self.config,
                                                                               self.data_parallel_size,
                                                                               self.pipeline_parallel_size,
-                                                                              self.tensor_parallel_size, **cfg)
+                                                                              self.tensor_parallel_size, **cfg,experiment)
             parallel_setting = initializer.init_dist_group()
             if isinstance(parallel_setting, list):
                 for args in parallel_setting:

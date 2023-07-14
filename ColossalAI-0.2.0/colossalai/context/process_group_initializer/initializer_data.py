@@ -38,8 +38,9 @@ class Initializer_Data(ProcessGroupInitializer):
         cpu_group = None
         group_world_size = None
         mode = ParallelMode.DATA
-        experiment = False
-        if self.data_parallel_size==2 and experiment:
+        experiment = self.experiment
+        print(self.experiment)
+        if experiment:
             rankslist = [[0,1],[2,3]]
             for ranks in rankslist:
                 group = dist.new_group(ranks)
