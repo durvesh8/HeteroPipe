@@ -476,7 +476,7 @@ class ParallelContext(metaclass=SingletonMeta):
             initializer = DIST_GROUP_INITIALIZER.get_module(initializer_type)(rank, world_size, self.config,
                                                                               self.data_parallel_size,
                                                                               self.pipeline_parallel_size,
-                                                                              self.tensor_parallel_size, **cfg,experiment)
+                                                                              self.tensor_parallel_size, experiment, **cfg)
             parallel_setting = initializer.init_dist_group()
             if isinstance(parallel_setting, list):
                 for args in parallel_setting:
