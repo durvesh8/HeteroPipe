@@ -227,7 +227,7 @@ def _build_generic_gpt_pipeline_1d(module_cls, num_layers, num_chunks, device=to
         pipeline_rank = 0
     rank = gpc.get_global_rank()
     
-    if pipeline_size > 1:
+    if pipeline_size < -1:
         wrapper = PipelineSharedModuleWrapper([0, pipeline_size - 1])
     else:
         wrapper = None
