@@ -20,14 +20,20 @@ optimizer = dict(
     weight_decay=1e-2,
 )
 
+experimentvar = False
+dpranksvar = [[0,1],[2,3]]
+ppranksvar = [[0,2],[1,3]]
+
 # model = dict(type=GPT3_pipeline_hybrid, checkpoint=True, num_chunks=1)
-model = dict(type=GPT3_pipeline_hybridgpt2small, checkpoint=True, num_chunks=1,num_attention_heads=12,hidden_size=HIDDEN_SIZE,max_position_embeddings=2048,num_layers=12)
+model = dict(type=GPT3_pipeline_hybridgpt2small, checkpoint=True, num_chunks=1,num_attention_heads=12,hidden_size=HIDDEN_SIZE,max_position_embeddings=2048,num_layers=12,experiment=experimentvar,dpranks=dpranksvar,ppranks=ppranksvar)
 
 # pipeline parallel: modify integer value for the number of pipeline stages
 # tensor parallel: modify size to set the tensor parallel size, usually the number of GPUs per node
 # for the current model implementation, mode can only be 1D or None
 parallel = dict(
     pipeline=2,
-    experiment=True,
+    experiment=experimentvar,
+    pipeline_ranks=ppranksvar,
+    dpranks=dpranksvar,
     tensor=dict(size=1, mode='1d'),    # for the current model implementation, mode can only be 1D or None
 )

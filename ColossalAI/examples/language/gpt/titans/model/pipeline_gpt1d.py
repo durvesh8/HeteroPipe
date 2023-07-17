@@ -228,7 +228,7 @@ def _build_generic_gpt_pipeline_1d(module_cls, num_layers, num_chunks, device=to
     rank = gpc.get_global_rank()
     
     if pipeline_size > 1:
-        wrapper = PipelineSharedModuleWrapper([0, pipeline_size - 1])
+        wrapper = PipelineSharedModuleWrapper([0, pipeline_size - 1],kwargs["experiment"],kwargs["dpranks"],kwargs["ppranks"])
     else:
         wrapper = None
     logger.info("Pipeline Size(gpc.get_world_size(pp)): "+str(pipeline_size)+" Pipeline Rank(gpc.get_local_rank(pp)) "+str(pipeline_rank))
@@ -323,11 +323,14 @@ def GPT3_pipeline_hybrid(num_chunks=1, checkpoint=False, dtype=torch.float, embe
                embed_split_hidden=embed_split_hidden)
     return _build_gpt_pipeline_hybrid(96, num_chunks, **cfg)
 
-def GPT3_pipeline_hybridgpt2small(num_chunks=1, checkpoint=False, dtype=torch.float, embed_split_hidden=False,hidden_size=12288, max_position_embeddings=2048,num_attention_heads=96,num_layers=96):
+def GPT3_pipeline_hybridgpt2small(num_chunks=1, checkpoint=False, dtype=torch.float, embed_split_hidden=False,hidden_size=12288, max_position_embeddings=2048,num_attention_heads=96,num_layers=96,ppranks=None,dpranks=None,experiment=False):
     cfg = dict(hidden_size=hidden_size,
                num_attention_heads=num_attention_heads,
                checkpoint=checkpoint,
                max_position_embeddings=max_position_embeddings,
                dtype=dtype,
-               embed_split_hidden=embed_split_hidden)
+               embed_split_hidden=embed_split_hidden,
+               ppranks=ppranks,
+               dpranks=dpranks,
+               experiment=experiment)
     return _build_gpt_pipeline_hybrid(num_layers, num_chunks, **cfg)

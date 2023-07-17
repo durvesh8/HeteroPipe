@@ -19,7 +19,7 @@ class ProcessGroupInitializer(ABC):
     """
 
     def __init__(self, rank: int, world_size: int, config: Config, data_parallel_size: int, pipeline_parallel_size: int,
-                 tensor_parallel_size: int,experiment: bool):
+                 tensor_parallel_size: int,experiment: bool,pipeline_ranks,dpranks):
         self.rank = rank
         self.world_size = world_size
         self.data_parallel_size = data_parallel_size
@@ -27,6 +27,8 @@ class ProcessGroupInitializer(ABC):
         self.pipeline_parallel_size = pipeline_parallel_size
         self.tensor_parallel_size = tensor_parallel_size
         self.experiment = experiment
+        self.pipeline_ranks = pipeline_ranks
+        self.dpranks = dpranks
         super().__init__()
 
     @abstractmethod

@@ -431,6 +431,8 @@ class ParallelContext(metaclass=SingletonMeta):
             self._set_parallel_size_from_config(parallel_config, 'pipeline', 'pipeline_parallel_size')
             self._set_parallel_size_from_config(parallel_config, 'tensor', 'tensor_parallel_size')
             experiment = parallel_config['experiment']
+            dpranks = parallel_config['dpranks']
+            pipeline_ranks = parallel_config['pipeline_ranks']
 
         # the user should not set the data parallel size manually
         # instead, it should be calculated based on other parallel config
@@ -476,7 +478,7 @@ class ParallelContext(metaclass=SingletonMeta):
             initializer = DIST_GROUP_INITIALIZER.get_module(initializer_type)(rank, world_size, self.config,
                                                                               self.data_parallel_size,
                                                                               self.pipeline_parallel_size,
-                                                                              self.tensor_parallel_size, experiment, **cfg)
+                                                                              self.tensor_parallel_size, experiment,pipeline_ranks,dpranks, **cfg)
             parallel_setting = initializer.init_dist_group()
             if isinstance(parallel_setting, list):
                 for args in parallel_setting:

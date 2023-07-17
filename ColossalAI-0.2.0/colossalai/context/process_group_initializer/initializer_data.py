@@ -41,7 +41,7 @@ class Initializer_Data(ProcessGroupInitializer):
         experiment = self.experiment
         print(self.experiment)
         if experiment:
-            rankslist = [[0,1],[2,3]]
+            rankslist = self.dpranks
             for ranks in rankslist:
                 group = dist.new_group(ranks)
                 group_cpu = dist.new_group(ranks, backend='gloo') if dist.get_backend() != 'gloo' else group
