@@ -7,15 +7,16 @@ from colossalai.core import global_context as gpc
 
 class PipelineSharedModuleWrapper:
 
-    def __init__(self, pipeline_ranks: Union[List[int], Tuple[int]],experiment,ppranks,dpranks) -> None:
+    def __init__(self, pipeline_ranks: Union[List[int], Tuple[int]],experiment=False,ppranks=[[0,2],[1,3]],dpranks=[[0,1],[2,3]]) -> None:
         assert len(pipeline_ranks) > 1, f'Expect len(pipeline_ranks) > 1, got {len(pipeline_ranks)}'
         self.pipeline_ranks = pipeline_ranks
         self.group = None
         self.ranks_in_group = None
-        self._init_group()
         self.ppranks = ppranks
         self.dpranks = dpranks
         self.experiment = experiment
+        self._init_group()
+        
 
     def _init_group(self):
         world_size = gpc.get_world_size(ParallelMode.GLOBAL)
