@@ -31,7 +31,6 @@ class PipelineSharedModuleWrapper:
                 pipeline_ranks = list(range(i * num_dp_groups + j, (i + 1) * num_dp_groups, num_pp_stages))
                 if self.experiment:
                     pipeline_ranks = pipeline_rankslist[i]
-                print("PIPELINE RANKS: ",i,j,pipeline_ranks)
                 sub_ranks = [pipeline_ranks[idx] for idx in self.pipeline_ranks]
                 group = dist.new_group(sub_ranks)
                 if rank in sub_ranks:

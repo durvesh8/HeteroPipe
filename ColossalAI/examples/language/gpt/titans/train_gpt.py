@@ -67,7 +67,7 @@ def main():
         model = gpc.config.model.pop('type')(**gpc.config.model)
     if use_pipeline and use_interleaved and not isinstance(model, nn.ModuleList):
         model = nn.ModuleList([model])
-        logger.info("NODE"+ str(model))
+        # logger.info("NODE"+ str(model))
 
     if use_zero3:
         numel = ctx.model_numel_tensor.item()

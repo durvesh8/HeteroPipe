@@ -228,7 +228,7 @@ def _build_generic_gpt_pipeline_1d(module_cls, num_layers, num_chunks, device=to
     rank = gpc.get_global_rank()
     
     if pipeline_size > 1:
-        wrapper = PipelineSharedModuleWrapper([0, pipeline_size - 1],kwargs["experiment"],kwargs["dpranks"],kwargs["ppranks"])
+        wrapper = PipelineSharedModuleWrapper([0, pipeline_size - 1],kwargs["experiment"],kwargs["ppranks"],kwargs["dpranks"])
     else:
         wrapper = None
     logger.info("Pipeline Size(gpc.get_world_size(pp)): "+str(pipeline_size)+" Pipeline Rank(gpc.get_local_rank(pp)) "+str(pipeline_rank))
