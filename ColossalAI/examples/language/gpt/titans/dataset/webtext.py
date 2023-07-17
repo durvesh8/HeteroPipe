@@ -20,13 +20,12 @@ class WebtextDataset(Dataset):
             root = os.path.dirname(path)
             self.files = glob.glob(os.path.join(path, '*.txt'))
             self.files = sorted(self.files)
-            #encoded_data_cache_path = os.path.join(root, f'gpt_webtext_{seq_len}.pt')
-            #if os.path.isfile(encoded_data_cache_path):
-                #seq_len_, data, attention_mask = torch.load(encoded_data_cache_path)
-                #if seq_len_ == seq_len:
-                    #self.data = data
-                    #self.attention_mask = attention_mask
-                    #return
+            encoded_data_cache_path = f'gpt_webtext_{seq_len}.pt'
+            if os.path.isfile(encoded_data_cache_path):
+                data, attention_mask = torch.load(encoded_data_cache_path)
+                self.data = data
+                self.attention_mask = attention_mask
+                return
             raw_data = []
             print("Loading Data")
             print("Seq Len",seq_len)
@@ -41,8 +40,9 @@ class WebtextDataset(Dataset):
                 self.data = encoded_data['input_ids']
                 self.attention_mask = encoded_data['attention_mask']
             print("Finished Loading Data")
-            print(self.data.shape)
-            print(self.data)
+            #print(self.data.shape)
+            #print(self.data)
+            torch.save((self.data, self.attention_mask), encoded_data_cache_path)
         else:
             self.data = torch.randint(0, 50257, (10240, seq_len))
             self.attention_mask = torch.ones_like(self.data)
