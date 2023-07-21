@@ -11,8 +11,8 @@ HIDDEN_SIZE = 768
 TENSOR_SHAPE = (BATCH_SIZE // NUM_MICRO_BATCHES, SEQ_LEN, HIDDEN_SIZE)
 
 # if you do no want zero, just comment out this dictionary
-zero = dict(model_config=dict(tensor_placement_policy='cuda', shard_strategy=TensorShardStrategy()),
-            optimizer_config=dict(initial_scale=2**5))
+#zero = dict(model_config=dict(tensor_placement_policy='cuda', shard_strategy=TensorShardStrategy()),
+            #optimizer_config=dict(initial_scale=2**5))
 
 optimizer = dict(
     type=HybridAdam,

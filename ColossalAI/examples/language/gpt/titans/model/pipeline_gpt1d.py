@@ -233,6 +233,10 @@ def _build_generic_gpt_pipeline_1d(module_cls, num_layers, num_chunks, device=to
         wrapper = None
     logger.info("Pipeline Size(gpc.get_world_size(pp)): "+str(pipeline_size)+" Pipeline Rank(gpc.get_local_rank(pp)) "+str(pipeline_rank))
     parts = partition_uniform(num_layers, pipeline_size, num_chunks)[pipeline_rank]
+    #partitions = [[[0,int(num_layers/2)+16]],[[int(num_layers/2)+16,num_layers]]]
+
+    #parts = partitions[pipeline_rank]
+    #print(parts)
     models = []
     for start, end in parts:
         kwargs['num_layers'] = end - start
@@ -253,8 +257,16 @@ def _build_generic_gpt_pipeline_1d(module_cls, num_layers, num_chunks, device=to
         model = nn.ModuleList(models)
 
     numel = 0
-    for _, param in model.named_parameters(recurse=True):
+    #print(list(model.children())) #GPT Block ([Embedding, Module list of blocks, layer norm, classifier])
+    for name, param in model.named_parameters(recurse=True):
         numel += param.numel()
+        #print("Numel, param", name, param)
+    param_dict = {}
+
+    for name, module in model.named_modules():
+        param_dict[name] = sum(p.numel() for p in module.parameters())
+
+    #print(param_dict)
     logger.info(f'Rank{rank}/{pipeline_rank} model size = {numel * 2 / 1e9} GB')
     return model
 

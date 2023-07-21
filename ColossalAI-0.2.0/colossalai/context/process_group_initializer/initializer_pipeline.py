@@ -44,7 +44,7 @@ class Initializer_Pipeline(ProcessGroupInitializer):
             for pipe_ranks in pipe_rankslist:
                 pipe_group_size = len(pipe_ranks)
                 pipe_group = dist.new_group(pipe_ranks)
-                group_cpu = dist.new_group(pipe_ranks, backend='gloo') if dist.get_backend() != 'gloo' else pipe_group
+                group_cpu = dist.new_group(pipe_ranks, backend='nccl') if dist.get_backend() != 'gloo' else pipe_group
                 # group_cpu = pipe_group
                 if self.rank in pipe_ranks:
                     local_rank = pipe_ranks.index(self.rank)
@@ -65,7 +65,7 @@ class Initializer_Pipeline(ProcessGroupInitializer):
                     range(i * self.data_group_size + j, (i + 1) * self.data_group_size, self.pipeline_stage_size))
                 pipe_group_size = len(pipe_ranks)
                 pipe_group = dist.new_group(pipe_ranks)
-                group_cpu = dist.new_group(pipe_ranks, backend='gloo') if dist.get_backend() != 'gloo' else pipe_group
+                group_cpu = dist.new_group(pipe_ranks, backend='nccl') if dist.get_backend() != 'gloo' else pipe_group
 
                 if self.rank in pipe_ranks:
                     local_rank = pipe_ranks.index(self.rank)
