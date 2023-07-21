@@ -5,10 +5,10 @@ from colossalai.zero.shard_utils import TensorShardStrategy
 
 pipeline_size = 2
 
-BATCH_SIZE = pipeline_size * 8
+BATCH_SIZE = pipeline_size * 4
 NUM_EPOCHS = 2
 SEQ_LEN = 2048
-NUM_MICRO_BATCHES = pipeline_size * 4
+NUM_MICRO_BATCHES = pipeline_size
 HIDDEN_SIZE = 768
 TENSOR_SHAPE = (BATCH_SIZE // NUM_MICRO_BATCHES, SEQ_LEN, HIDDEN_SIZE)
 
@@ -22,14 +22,14 @@ optimizer = dict(
     weight_decay=1e-2,
 )
 
-experimentvar = True
+experimentvar = False
 
 dpranksvar = [[0,1],[2,3]]
 ppranksvar = [[0,2],[1,3]]
 
 # model = dict(type=GPT3_pipeline_hybrid, checkpoint=True, num_chunks=1)
-model = dict(type=GPT3_pipeline_hybridgpt2small, checkpoint=True, num_chunks=1,num_attention_heads=12,hidden_size=HIDDEN_SIZE,
-                            max_position_embeddings=2048,num_layers=12,experiment=experimentvar,dpranks=dpranksvar,ppranks=ppranksvar)
+model = dict(type=GPT3_pipeline_hybridgpt2small, checkpoint=True, num_chunks=1,num_attention_heads=48,hidden_size=HIDDEN_SIZE,
+                            max_position_embeddings=2048,num_layers=48,experiment=experimentvar,dpranks=dpranksvar,ppranks=ppranksvar)
 #model = dict(type=GPT3_pipeline_hybridgpt2small, checkpoint=True, num_chunks=1,experiment=experimentvar,dpranks=dpranksvar,ppranks=ppranksvar)
 
 
