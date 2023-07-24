@@ -11,12 +11,12 @@ This guide will walk you through the process of setting up the ColossalAI codeba
 
 ## Steps
 
-1. **Create a new conda environment with Python 3.8**
+1. **Create a new conda environment with Python 3.9**
 
     Open a terminal and run the following commands:
 
     ```bash
-    conda create -n colossal_new python=3.8
+    conda create -n colossal_new python=3.9
     conda activate colossal_new
     ```
 
