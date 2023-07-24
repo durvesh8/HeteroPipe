@@ -1,19 +1,64 @@
-Setting up the codebase:
+# Setting Up the ColossalAI Codebase
 
-1.	Create a new conda environment with python 3.8\
-	a.	conda create -n colossal_mod python=3.8\
-	b.	conda activate colossal_mod
-2.	Make sure you have CUDA 11.3 as the main CUDA. Set up a symlink if needed.\
-	a.	wget https://developer.download.nvidia.com/compute/cuda/11.3.0/local_installers/cuda_11.3.0_465.19.01_linux.run \
-	b.	sudo sh cuda_11.3.0_465.19.01_linux.run \
-	c.	export PATH="/usr/local/cuda-11.3/bin:$PATH"\
-	d.	export LD_LIBRARY_PATH="/usr/local/cuda-11.3/lib64:$LD_LIBRARY_PATH"
-3.	Install Torch 1.12.0 using pip (Not with conda) \
-	a.	pip install torch==1.12.0+cu113 torchvision==0.13.0+cu113 torchaudio==0.12.0 --extra-index-url https://download.pytorch.org/whl/cu113 \
-	b.	git clone our repository (Includes the modified colossal AI)\
-	c.	cd our repo\
-	d.	pip install -r requirements.txt\
-	e.	(Optional) If you have cached the previously installed extensions, remove them\
-	f.	rm -rf /home/$USER/.cache/torch_extensions/py38_cu113\
-	g.	cd ColossalAI-0.2.0\
-	h.	CUDA_EXT=1 pip install .
+This guide will walk you through the process of setting up the ColossalAI codebase on your system.
+
+## Prerequisites
+
+- Conda
+- CUDA 11.7
+- Git
+- Pip
+
+## Steps
+
+1. **Create a new conda environment with Python 3.8**
+
+    Open a terminal and run the following commands:
+
+    ```bash
+    conda create -n colossal_new python=3.8
+    conda activate colossal_new
+    ```
+
+2. **Set up CUDA 11.7 as the main CUDA**
+
+    If you don't have CUDA 11.7 installed, you can download and install it with the following commands:
+
+    ```bash
+    wget https://developer.download.nvidia.com/compute/cuda/11.7.0/local_installers/cuda_11.7.0_515.43.04_linux.run
+    sudo sh cuda_11.7.0_515.43.04_linux.run
+    ```
+	Accept EULA and tick only CUDA toolkit, select NO as for symlink already exists.
+    Then, add CUDA 11.7 to your PATH and LD_LIBRARY_PATH with these commands:
+
+    ```bash
+    export PATH="/usr/local/cuda-11.7/bin:$PATH"
+    export LD_LIBRARY_PATH="/usr/local/cuda-11.7/lib64:$LD_LIBRARY_PATH"
+    ```
+
+3. **Clone the ColossalAI repository**
+
+    You can clone the ColossalAI repository with this command:
+
+    ```bash
+    git clone https://github.com/hpcaitech/ColossalAI.git
+    ```
+
+4. **Install the ColossalAI package**
+
+    Navigate to the ColossalAI directory and install the package with this command:
+
+    ```bash
+    cd ColossalAI
+    pip install .
+    ```
+
+5. **Install additional Python packages**
+
+    You can install the additional required Python packages with these commands:
+
+    ```bash
+    pip install transformers
+    pip install titans
+    ```
+
