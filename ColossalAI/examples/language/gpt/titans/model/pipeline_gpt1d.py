@@ -226,17 +226,12 @@ def _build_generic_gpt_pipeline_1d(module_cls, num_layers, num_chunks, device=to
         pipeline_size = 1
         pipeline_rank = 0
     rank = gpc.get_global_rank()
-    
+
     if pipeline_size > 1:
-        wrapper = PipelineSharedModuleWrapper([0, pipeline_size - 1],kwargs["experiment"],kwargs["ppranks"],kwargs["dpranks"])
+        wrapper = PipelineSharedModuleWrapper([0, pipeline_size - 1])
     else:
         wrapper = None
-    logger.info("Pipeline Size(gpc.get_world_size(pp)): "+str(pipeline_size)+" Pipeline Rank(gpc.get_local_rank(pp)) "+str(pipeline_rank))
     parts = partition_uniform(num_layers, pipeline_size, num_chunks)[pipeline_rank]
-    #partitions = [[[0,int(num_layers/2)+16]],[[int(num_layers/2)+16,num_layers]]]
-
-    #parts = partitions[pipeline_rank]
-    #print(parts)
     models = []
     for start, end in parts:
         kwargs['num_layers'] = end - start
@@ -257,16 +252,8 @@ def _build_generic_gpt_pipeline_1d(module_cls, num_layers, num_chunks, device=to
         model = nn.ModuleList(models)
 
     numel = 0
-    #print(list(model.children())) #GPT Block ([Embedding, Module list of blocks, layer norm, classifier])
-    for name, param in model.named_parameters(recurse=True):
+    for _, param in model.named_parameters(recurse=True):
         numel += param.numel()
-        #print("Numel, param", name, param)
-    param_dict = {}
-
-    for name, module in model.named_modules():
-        param_dict[name] = sum(p.numel() for p in module.parameters())
-
-    #print(param_dict)
     logger.info(f'Rank{rank}/{pipeline_rank} model size = {numel * 2 / 1e9} GB')
     return model
 
@@ -327,13 +314,13 @@ def GPT2_small_pipeline_hybrid(num_chunks=1, checkpoint=False, dtype=torch.float
 
 
 def GPT3_pipeline_hybrid(num_chunks=1, checkpoint=False, dtype=torch.float, embed_split_hidden=False):
-    cfg = dict(hidden_size=12288,
-               num_attention_heads=96,
+    cfg = dict(hidden_size=768,
+               num_attention_heads=12,
                checkpoint=checkpoint,
                max_position_embeddings=2048,
                dtype=dtype,
                embed_split_hidden=embed_split_hidden)
-    return _build_gpt_pipeline_hybrid(96, num_chunks, **cfg)
+    return _build_gpt_pipeline_hybrid(12, num_chunks, **cfg)
 
 def GPT3_pipeline_hybridgpt2small(num_chunks=1, checkpoint=False, dtype=torch.float, embed_split_hidden=False,hidden_size=12288, max_position_embeddings=2048,num_attention_heads=96,num_layers=96,ppranks=None,dpranks=None,experiment=False):
     cfg = dict(hidden_size=hidden_size,

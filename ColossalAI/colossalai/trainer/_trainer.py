@@ -3,6 +3,18 @@ from typing import Union, List, Any
 import torch
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+import csv
+import time
+import os
+import numpy as np
+
+filename = os.environ['exp_name'] + "_training_results.csv"
+headers = ["epoch", "loss", "lr", "throughput", "tflops"]
+
+with open(filename, 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(headers)
+
 
 from colossalai.engine import Engine
 from colossalai.logging import DistributedLogger
@@ -193,6 +205,14 @@ class Trainer:
             if display_progress:
                 if "step_metrics" in self.states:
                     progress.set_postfix(**self.states["step_metrics"])
+                    #print(self.states["step_metrics"])
+                    results = self.states["step_metrics"]
+                    throughput, tflops = results['throughput'].split(', ')
+                    tflops = tflops.replace(' Tflops', '')
+                    throughput = throughput.replace(' sample_per_sec', '')
+                    with open(filename, 'a', newline='') as f:
+                        writer = csv.writer(f)
+                        writer.writerow([epoch, results['loss'], results['lr'], throughput, tflops])
 
             # stop when max iter is reached
             if self._exceed_max_step():
@@ -315,15 +335,22 @@ class Trainer:
         last_epoch = self._cur_epoch
         if self.cur_epoch != 0:
             self._set_current_step(last_epoch)
+        
+        time_list = []
 
         for epoch in range(last_epoch, epochs):
             # train for one epoch
+            start = time.time()
             self._train_epoch(
                 train_dataloader=train_dataloader,
                 epoch=epoch,
                 display_progress=display_progress,
                 return_output_label=return_output_label,
             )
+            end = time.time()
+            if display_progress:
+                time_taken = end - start
+                time_list.append(time_taken)
 
             # start eval
             if should_test and epoch % test_interval == 0:

@@ -35,14 +35,17 @@ class Initializer_Pipeline(ProcessGroupInitializer):
                 A Pipeline parallelism's information in list of tuples.
         """
         dist_settings = list()
-        experiment = True
-        if self.data_parallel_size==2 and self.pipeline_stage_size==1 and experiment:
-            pipe_rankslist = [[0,2],[1,3]]
+        experiment = self.experiment
+        print(self.experiment)
+        # Temp commit for VS Code
+        if experiment:
+            pipe_rankslist = self.pipeline_ranks
 
             for pipe_ranks in pipe_rankslist:
                 pipe_group_size = len(pipe_ranks)
                 pipe_group = dist.new_group(pipe_ranks)
                 group_cpu = dist.new_group(pipe_ranks, backend='gloo') if dist.get_backend() != 'gloo' else pipe_group
+                # group_cpu = pipe_group
                 if self.rank in pipe_ranks:
                     local_rank = pipe_ranks.index(self.rank)
                     group_world_size = pipe_group_size

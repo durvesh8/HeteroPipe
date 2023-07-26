@@ -1,11 +1,13 @@
 import contextlib
 import os
+import subprocess
+import time
 
 import torch
 import torch.nn as nn
 from dataset.webtext import WebtextDataset
 from titans.model.gpt import GPTLMLoss
-import numpy as np
+
 import colossalai
 import colossalai.utils as utils
 from colossalai.context.parallel_mode import ParallelMode
@@ -13,12 +15,9 @@ from colossalai.core import global_context as gpc
 from colossalai.logging import disable_existing_loggers, get_dist_logger
 from colossalai.nn import LinearWarmupLR
 from colossalai.trainer import Trainer, hooks
-from colossalai.trainer.hooks import BaseHook
 from colossalai.utils import colo_set_process_memory_fraction, is_using_pp
 from colossalai.utils.timer import MultiTimer
-from colossalai.zero.init_ctx import ZeroInitContext
-import socket
-from colossalai.trainer.hooks._metric_hook import ThroughputMetric
+from colossalai.zero.legacy.init_ctx import ZeroInitContext
 
 
 def calc_local_model_size(model: torch.nn.Module):
@@ -67,7 +66,6 @@ def main():
         model = gpc.config.model.pop('type')(**gpc.config.model)
     if use_pipeline and use_interleaved and not isinstance(model, nn.ModuleList):
         model = nn.ModuleList([model])
-        # logger.info("NODE"+ str(model))
 
     if use_zero3:
         numel = ctx.model_numel_tensor.item()
@@ -95,7 +93,6 @@ def main():
     logger.info(f'Init done, global batch size = {global_batch_size}', ranks=[0])
     timier = MultiTimer()
     trainer = Trainer(engine=engine, logger=logger, timer=timier)
-    printhook = PrintMetricByStepHook()
     hook_list = [
         hooks.LossHook(),
         hooks.LRSchedulerHook(lr_scheduler=lr_scheduler, by_epoch=True),
@@ -103,55 +100,22 @@ def main():
         hooks.ThroughputHook(ignored_steps=10, tflop_per_step=tflop),
         hooks.LogMetricByStepHook(),
         hooks.LogMemoryByEpochHook(logger),
-        printhook,
     # hooks.LogMemoryByEpochHook(logger),
     # hooks.LogTimingByEpochHook(timer, logger),
     ]
+    if(os.environ["LOCAL_RANK"] == "0"):
+        subprocess1 = subprocess.Popen(["bash", "gpu_log.sh"])
+        start = time.time()
     trainer.fit(train_dataloader=train_dataloader,
                 epochs=gpc.config.NUM_EPOCHS,
                 test_interval=1,
                 hooks=hook_list,
                 display_progress=True,
                 return_output_label=False)
-    np.save("tempres_multi_blipp_large.npy",np.array(printhook.listofthroughputs))
-
-class PrintMetricByStepHook(BaseHook):
-    """Print to log metric by step.
-
-    Args:
-        priority (int, optional): Priority in the printing, hooks with small priority will be printed in front,
-            defaults to 10. If different hooks share same priority, the order of printing would
-            depend on the hooks order in the hook list.
-    """
-
-    def __init__(self, priority: int = 10):
-        super().__init__(priority)
-        self.listofthroughputs = []
-
-    def after_train_iter(self, trainer, *args):
-        # trainer.states['step_metrics'] = dict()
-        for metric_name, metric_calculator in trainer.states['metrics']['train'].items():
-            if isinstance(metric_calculator, ThroughputMetric):
-                # trainer.states['step_metrics'][metric_name.lower()] = metric_calculator.get_last_step_info()
-                # print("after_train_iter, Metric Name: ",metric_name," Info: ",metric_calculator.get_last_step_info()," Info: ",metric_calculator.get_last_step_info())
-                self.listofthroughputs.append("Node"+str(socket.gethostname())+" RANK: "+str(os.environ["RANK"])+" LOCAL RANK: "+str(os.environ["LOCAL_RANK"])+" "+str(metric_calculator.get_last_step_info()))
-            else:
-                # trainer.states['step_metrics'][metric_name.lower()] = metric_calculator.get_last_step_value()
-                # print("after_train_iter",metric_name,metric_calculator.get_last_step_value())
-                pass
-
-    def after_test_iter(self, trainer, *args):
-        # trainer.states['step_metrics'] = dict()
-        for metric_name, metric_calculator in trainer.states['metrics']['test'].items():
-            if isinstance(metric_calculator, ThroughputMetric):
-                # trainer.states['step_metrics'][metric_name.lower()] = metric_calculator.get_last_step_info()
-                # print("after_train_iter, Metric Name: ",metric_name," Info: ",metric_calculator.get_last_step_info()," Info: ",metric_calculator.get_last_step_info())
-                pass
-            else:
-                # trainer.states['step_metrics'][metric_name.lower()] = metric_calculator.get_last_step_value()
-                # print("after_test_iter",metric_name,metric_calculator.get_last_step_value())
-                pass
-
+    if(os.environ["LOCAL_RANK"] == "0"):
+        subprocess1.kill()
+        end = time.time()
+        print("-----------TOTAL_TRAINING_TIME-------------- ", end - start)
 
 if __name__ == '__main__':
     main()

@@ -50,7 +50,7 @@ def get_default_parser():
     parser.add_argument('--port', type=int, help='the master port for distributed training')
     parser.add_argument('--world_size', type=int, help='world size for distributed training')
     parser.add_argument('--rank', type=int, help='rank for the default process group')
-    parser.add_argument('--local_rank', type=int, help='local rank on the node')
+    parser.add_argument('--local-rank', type=int, help='local rank on the node')
     parser.add_argument('--backend', type=str, default='nccl', help='backend for distributed communication')
     return parser
 

@@ -39,6 +39,22 @@ class Initializer_Data(ProcessGroupInitializer):
         cpu_group = None
         group_world_size = None
         mode = ParallelMode.DATA
+        experiment = self.experiment
+        print(self.experiment)
+        if experiment:
+            rankslist = self.dpranks
+            for ranks in rankslist:
+                group = dist.new_group(ranks)
+                group_cpu = dist.new_group(ranks, backend='gloo') if dist.get_backend() != 'gloo' else group
+                # group_cpu = group
+                if self.rank in ranks:
+                    local_rank = ranks.index(self.rank)
+                    group_world_size = len(ranks)
+                    process_group = group
+                    cpu_group = group_cpu
+                    ranks_in_group = ranks
+
+            return local_rank, group_world_size, process_group, cpu_group, ranks_in_group, mode
 
         for i in range(self.num_data_parallel_group):
             ranks = [i + j * self.num_data_parallel_group for j in range(self.data_parallel_size)]
