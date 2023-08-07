@@ -62,3 +62,17 @@ This guide will walk you through the process of setting up the ColossalAI codeba
     pip install titans
     ```
 
+## Results
+
+Our modificaiton to ColossalAI framework provides significant improvements across various performance metrics. Below are the three graphs that illustrate the enhancement in the following areas:
+
+1. **Improvement in TFLOPS**: This graph shows the increase in tera-floating point operations per second (TFLOPS) achieved using our approach compared to their baseline.
+
+2. **Reduction in Runtime**: A comparison between original ColossalAI and our implementation, highlighting the reduced time needed for the same computations.
+
+3. **Drop in Communication**: Illustration of how our approach minimizes inter-node communication overhead, leading to more efficient parallel processing.
+
+![Results Graphs](images/results_graphs.png)
+![Results Graphs](images/results_graphs.png)
+![Results Graphs](images/results_graphs.png)
+
