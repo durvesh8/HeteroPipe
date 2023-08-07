@@ -73,6 +73,6 @@ Our modificaiton to ColossalAI framework provides significant improvements acros
 3. **Drop in Communication**: Illustration of how our approach minimizes inter-node communication overhead, leading to more efficient parallel processing.
 
 ![Results Graphs](images/cost.png)
-![Results Graphs](iamges/runtime.png)
+![Results Graphs](images/runtime.png)
 ![Results Graphs](images/tflops.png)
 
