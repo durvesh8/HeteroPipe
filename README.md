@@ -71,6 +71,7 @@ This guide will walk you through the process of setting up the ColossalAI codeba
     You can download the preprocessed sample dataset for this demo via our [Google Drive sharing link](https://drive.google.com/file/d/1QTCS_etZr3BTvL_mUwI47rFpHLDB32sk/view?usp=drive_link) and place it in this directory or you can use dummy dataset.
 
 8. **Commands to run**
+   
     Run on a single node
     ```bash
     colossalai run --nproc_per_node=<num_gpus> train_gpt.py --config configs/<config_file> --from_torch --use_dummy_dataset
