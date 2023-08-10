@@ -22,7 +22,7 @@ optimizer = dict(
     weight_decay=1e-2,
 )
 
-experimentvar = False
+experimentvar = True
 
 dpranksvar = [[0,1],[2,3]]
 ppranksvar = [[0,2],[1,3]]

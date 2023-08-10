@@ -8,12 +8,6 @@ import time
 import os
 import numpy as np
 
-filename = os.environ['exp_name'] + "_training_results.csv"
-headers = ["epoch", "loss", "lr", "throughput", "tflops"]
-
-with open(filename, 'w', newline='') as f:
-    writer = csv.writer(f)
-    writer.writerow(headers)
 
 
 from colossalai.engine import Engine
@@ -206,13 +200,6 @@ class Trainer:
                 if "step_metrics" in self.states:
                     progress.set_postfix(**self.states["step_metrics"])
                     #print(self.states["step_metrics"])
-                    results = self.states["step_metrics"]
-                    throughput, tflops = results['throughput'].split(', ')
-                    tflops = tflops.replace(' Tflops', '')
-                    throughput = throughput.replace(' sample_per_sec', '')
-                    with open(filename, 'a', newline='') as f:
-                        writer = csv.writer(f)
-                        writer.writerow([epoch, results['loss'], results['lr'], throughput, tflops])
 
             # stop when max iter is reached
             if self._exceed_max_step():

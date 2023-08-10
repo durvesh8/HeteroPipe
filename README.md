@@ -38,10 +38,10 @@ This guide will walk you through the process of setting up the ColossalAI codeba
 
 3. **Clone the ColossalAI repository**
 
-    You can clone the ColossalAI repository with this command:
+    You can clone our repository with this command:
 
     ```bash
-    git clone https://github.com/hpcaitech/ColossalAI.git
+    git clone https://github.com/durvesh8/HeteroPipe.git
     ```
 
 4. **Install the ColossalAI package**
@@ -49,8 +49,8 @@ This guide will walk you through the process of setting up the ColossalAI codeba
     Navigate to the ColossalAI directory and install the package with this command:
 
     ```bash
-    cd ColossalAI
-    pip install .
+    cd HeteroPipe/ColossalAI
+    CUDA_EXT=1 pip install .
     ```
 
 5. **Install additional Python packages**
@@ -61,6 +61,49 @@ This guide will walk you through the process of setting up the ColossalAI codeba
     pip install transformers
     pip install titans
     ```
+6. **Into the GPT codebase**
+    The GPT training code is in here.
+
+    ```bash
+    cd examples/language/gpt/titans
+    ```
+7. **Webtext dataset**
+    You can download the preprocessed sample dataset for this demo via our [Google Drive sharing link](https://drive.google.com/file/d/1QTCS_etZr3BTvL_mUwI47rFpHLDB32sk/view?usp=drive_link) and place it in this directory or you can use dummy dataset.
+
+8. **Commands to run**
+    # run on a single node
+    ```bash
+    colossalai run --nproc_per_node=<num_gpus> train_gpt.py --config configs/<config_file> --from_torch --use_dummy_dataset
+    ```
+    # run on a multiple nodes (run from each terminal)
+    You need to ensure that environment is setup properly using the above steps, data is in place and files are same across all nodes.
+    ```bash
+    torchrun --nproc_per_node=<num_gpus> --nnodes=<num_nodes> --node_rank=<specify_node_rank> --master_addr=<MASTER_ADDR> --master_port <MASTER_PORT> train_gpt.py --config configs/gpt3_zero3_pp1d.py --from_torch --use_dummy_dataset
+    ```
+    # run on a multiple nodes (run from master terminal)
+    Yon can use colossalai run to launch multi-nodes training:
+    ```bash
+    colossalai run --nproc_per_node YOUR_GPU_PER_NODE --hostfile YOUR_HOST_FILE \
+    --master_addr YOUR_MASTER_ADDR train_gpt.py --config configs/gpt3_zero3_pp1d.py --from_torch --use_dummy_dataset
+    ```
+
+    Here is a sample hostfile:
+
+    ```text
+    hostname1
+    hostname2
+    hostname3
+    hostname4
+    ```
+
+    Make sure master node can access all nodes (including itself) by ssh without password and that environment is setup on each node and even the environment name is same, code is consistent across all these nodes.
+    # Using webtext
+    To use webtext remove "use_dummy_dataset" and run
+    ```bash
+    export DATA="PATH_TO_YOUR_DATA"
+    ```
+    
+
 
 ## Results
 
