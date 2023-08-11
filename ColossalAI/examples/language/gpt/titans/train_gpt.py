@@ -103,19 +103,11 @@ def main():
     # hooks.LogMemoryByEpochHook(logger),
     # hooks.LogTimingByEpochHook(timer, logger),
     ]
-    if(os.environ["LOCAL_RANK"] == "0"):
-        subprocess1 = subprocess.Popen(["bash", "gpu_log.sh"])
-        start = time.time()
     trainer.fit(train_dataloader=train_dataloader,
                 epochs=gpc.config.NUM_EPOCHS,
                 test_interval=1,
                 hooks=hook_list,
                 display_progress=True,
                 return_output_label=False)
-    if(os.environ["LOCAL_RANK"] == "0"):
-        subprocess1.kill()
-        end = time.time()
-        print("-----------TOTAL_TRAINING_TIME-------------- ", end - start)
-
 if __name__ == '__main__':
     main()
