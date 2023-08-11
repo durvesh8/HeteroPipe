@@ -81,11 +81,19 @@ This guide will walk you through the process of setting up the ColossalAI codeba
     ```bash
     torchrun --nproc_per_node=<num_gpus> --nnodes=<num_nodes> --node_rank=<specify_node_rank> --master_addr=<MASTER_ADDR> --master_port <MASTER_PORT> train_gpt.py --config configs/gpt3_zero3_pp1d.py --from_torch --use_dummy_dataset
     ```
+    - Node Ranks start from 0.
+    - Master Address can be any node's IP: 100.100.100.20
+      
     #### Run on a multiple nodes (run from master terminal)
     ```bash
     colossalai run --nproc_per_node YOUR_GPU_PER_NODE --hostfile YOUR_HOST_FILE \
     --master_addr YOUR_MASTER_ADDR train_gpt.py --config configs/gpt3_zero3_pp1d.py --from_torch --use_dummy_dataset
     ```
+
+    - To be able to run the training of GPT-3 in a custom manner, change the experimentvar to True in configs/gpt3_zero_pp1d.py. Then, change the dpranksvar and ppranksvar to your choice.
+    - Given 3 nodes with 4 GPUs each, (for a pipeline size 4)
+    - An inefficient setting (default): ppranks = [[0,1,2,3],[4,5,6,7],[8,9,10,11]]. dpranks = [[0,4,8],[1,5,9],[2,6,10],[3,7,11]] (Here, Stage A,B,c,D are on 0,1,2,3 respectively as well as 4,5,6,7 (A,B,C,D) with 3 such pipelines connected in data parallel.)
+    - An efficient setting with pipeline size 3: ppranks: [[0,4,8],[1,5,9],[2,6,10],[3,7,11]], dpranks: [[0,1,2,3],[4,5,6,7],[8,9,10,11]]. (Here, Stage A,B,C are on 0,4,8 respectively as well as 1,5,9 (A,B,C) with 4 such pipelines connected in data parallel.)
 
     Here is a sample hostfile:
 
